@@ -21,8 +21,10 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		//Cuando hay uno vacio salta una excepcion y no continua el flujo
-		Flux <Usuario> nombres = Flux.just("Andres","Raul","Juan", "Diego")
-				.map(nombre -> new Usuario(nombre.toUpperCase(), null))
+		//Cada flujo es diferente y hay que subscribirse a ellos
+		Flux <String> nombres = Flux.just("Andres Guzman","Raul Lopez","Juan Rosas", "Diego Lopez", "Bruce Lee", "Bruce Willis");
+		Flux <Usuario> usuarios = nombres.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase() ))
+				.filter(usuario -> usuario.getNombre().equals("BRUCE"))
 		.doOnNext(usuario -> {
 			if (usuario ==null) {
 				throw new RuntimeException("Nombres no pueden estar vacíos");
@@ -37,7 +39,7 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 			return usuario;
 		});
 		//te pide un consumidor Consumer de la clase que sea 
-		nombres.subscribe(e -> logger.info(e.getNombre()),
+		usuarios.subscribe(e -> logger.info(e.getNombre()),
 				//el error viene de la clase throwable 
 				error -> logger.error(error.getMessage()),
 				new Runnable() {
