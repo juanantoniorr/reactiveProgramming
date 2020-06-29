@@ -1,5 +1,8 @@
 package com.proyecto.springboot.reactor.app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,9 +23,17 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		List <String> usuariosList = new ArrayList<>();
+		usuariosList.add("Andres Guzman");
+		usuariosList.add("Raul Lopez");
+		usuariosList.add("Juan Rosas");
+		usuariosList.add("Diego Lopez");
+		usuariosList.add("Bruce Lee");
+		usuariosList.add("Bruce Willis");
+		
 		//Cuando hay uno vacio salta una excepcion y no continua el flujo
 		//Cada flujo es diferente y hay que subscribirse a ellos
-		Flux <String> nombres = Flux.just("Andres Guzman","Raul Lopez","Juan Rosas", "Diego Lopez", "Bruce Lee", "Bruce Willis");
+		Flux <String> nombres = Flux.fromIterable(usuariosList); //Flux.just("Andres Guzman","Raul Lopez","Juan Rosas", "Diego Lopez", "Bruce Lee", "Bruce Willis");
 		Flux <Usuario> usuarios = nombres.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase() ))
 				.filter(usuario -> usuario.getNombre().equals("BRUCE"))
 		.doOnNext(usuario -> {
